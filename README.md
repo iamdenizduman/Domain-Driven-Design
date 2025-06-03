@@ -113,3 +113,38 @@ Temelde 4 katmanlı bir mimariden oluşur:
 - 🔌 **Infrastructure Layer** – Veritabanı, dış servisler gibi teknik detayların yer aldığı katman
 - 🎨 **Presentation Layer** – Kullanıcı arayüzlerinin yer aldığı katman
 
+---
+
+### 🌟 Örnek Proje: **OrderService**
+
+#### 📁 `Order.Domain`
+
+**SeedWork** klasörü içerisine temel sınıflar eklendi:
+
+- 🧱 **BaseEntity**: Id’si olan, veritabanına kaydedilecek tüm entity’lerin temel sınıfı.
+- 🧹 **IAggregateRoot**: Bounded Context içinde dış erişime açık kök entity’leri işaretler.
+- 📦 **IRepository**: Veri erişim katmanında kullanılacak temel repository arayüzü.
+- 🔄 **IUnitOfWork**: Transaction yönetimi için kullanılan birimler.
+- 🧬 **ValueObject**: Kimliği olmayan, değerlerine göre eşitlik kontrolü yapılan objeler.
+
+**AggregateModels** içerisinde `OrderModels` klasörü eklendi:
+
+- 🏠 **Address**: Bir Value Object'tir. Kimliği yoktur, veritabanında ayrı tablosu bulunmaz.
+- ✅ **Order**: AggregateRoot’tur. Dışarıdan erişim sağlanabilen ana sınıftır.
+- 📄 **OrderItem**: Bir Entity’dir. Ayrı tablosu bulunur fakat doğrudan erişim sağlanmaz.
+
+**Events** klasörü içerisinde `OrderStartedDomainEvent` sınıfı eklendi:
+
+- ✨ **OrderStartedDomainEvent**: MediatR kütüphanesindeki `INotification` arayüzü ile şekillendirilmiş, mesaj taşıyan domain eventi.
+
+---
+
+#### 📂 `Order.Application`
+
+**DomainEventHandler** klasörü içerisinde event handler sınıfları yer almakta:
+
+- 🔧 **OrderStartedDomainHandler**: `INotificationHandler` arayüzü implemente edilir. `Handle` metodu içerisinde iş kuralları çalıştırılır, gerekirse diğer bounded context'lerle iletişime geçilir.
+
+**Repository** klasörü içinde base entity’lere özel imzalar tanımlanır:
+
+- 🔍 **IOrderRepository**: `IRepository` arayüzü temel alınarak, `Order` entity’sine özel metotlar eklenir.
